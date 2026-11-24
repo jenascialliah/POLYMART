@@ -1,1 +1,0 @@
-<?php require 'bootstrap.php'; out(['csrf'=>$_SESSION['csrf'],'email'=>$_SESSION['email']??null]);

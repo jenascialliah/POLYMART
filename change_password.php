@@ -1,3 +1,0 @@
-<?php
-require 'bootstrap.php'; auth(); require 'connect.php';
-$e=auth();$d=post();throttle('password_attempts');$old=$d['currentPassword']??'';$h=query('SELECT password FROM users WHERE email=?','s',$e)->get_result()->fetch_assoc()['password'];if(!is_string($old)||!password_verify($old,$h))fail('Incorrect current password.');query('UPDATE users SET password=? WHERE email=?','ss',password_hash(passwordInput($d,'newPassword'),PASSWORD_DEFAULT),$e);session_regenerate_id(true);out(['success'=>true]);

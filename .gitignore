@@ -9,7 +9,6 @@
 
 # Private database backups
 *.sql
-!schema.sql
 
 # Logs
 *.log

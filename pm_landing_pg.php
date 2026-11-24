@@ -1,9 +1,8 @@
-<?php require 'bootstrap.php';  ?>
+<?php require __DIR__.'/bootstrap.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="csrf-token" content="<?= htmlspecialchars($_SESSION['csrf'], ENT_QUOTES) ?>">
-<script src="auth.js"></script>
+<script src="guest.js"></script>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <title>PolyMart</title>
@@ -14,7 +13,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
   <link href="style.css" rel="stylesheet" />
 </head>
-<body><div style="background:#fff1c4;color:#501515;text-align:center;padding:8px;font:14px sans-serif">Portfolio demo — use fictional details only. No real payments or deliveries.</div>
+<body><div style="background:#fff1c4;color:#501515;text-align:center;padding:8px;font:14px sans-serif">Portfolio demo — no sign-in, real payments or deliveries.</div>
   <header>
     <nav>
       <div class="logo-container">
@@ -28,10 +27,10 @@
         <span class="logo-text">PolyMart</span>
       </div>
       <ul class="nav-links">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Categories</a></li>
-        <li><a href="#">Sell</a></li>
-        <li><a href="#">My Account</a></li>
+        <li><a href="main_pm.php#Home">Home</a></li>
+        <li><a href="main_pm.php#Categories">Categories</a></li>
+        <li><a href="main_pm.php#About">About</a></li>
+        <li><a href="purchase.php">My Purchases</a></li>
       </ul>
       <div class="search-cart">
         <form class="search-form" role="search" aria-label="Search products">
@@ -39,7 +38,7 @@
             <button type="submit" class="search-button" aria-label="Search"><i class="fas fa-search"></i></button>
         </form>
         </div>
-        <button class="cart-button" aria-label="Shopping cart">
+        <button class="cart-button" aria-label="Shopping cart" onclick="location.href='cart.php'">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -47,7 +46,7 @@
   </header>
   <main>
     <section class="text-section">
-      <video autoplay muted loop id="bg-video">
+      <video autoplay muted loop playsinline id="bg-video">
   <source src="elements/bg_moving5.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
@@ -61,7 +60,7 @@
         Your campus marketplace for buying and selling everything you need.
         Easy, Fast and student-friendly!
       </p>
-      <button class="btn-get-started">Get Started</button>
+      <button class="btn-get-started">Browse Products</button>
     <div class="loader-overlay" id="loader">
     <div class="spinner"></div>
     </div>
@@ -77,10 +76,6 @@
   </main>
   <script src="pm.js"></script>
   
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    autoRedirectIfLoggedIn(); // Auto-redirect
-  });
-</script>
+  
 </body>
 </html>

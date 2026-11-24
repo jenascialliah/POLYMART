@@ -1,9 +1,8 @@
-<?php require 'bootstrap.php'; if(empty($_SESSION['email'])){header('Location: login_page.php');exit;} require 'connect.php'; ?>
+<?php require __DIR__.'/bootstrap.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="csrf-token" content="<?= htmlspecialchars($_SESSION['csrf'], ENT_QUOTES) ?>">
-<script src="auth.js"></script><script>sessionStorage.setItem('currentUser',<?= json_encode($_SESSION['email'],JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>);sessionStorage.setItem('currentUserData',JSON.stringify(<?= json_encode(profile($_SESSION['email']),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>));</script>
+<script src="guest.js"></script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>PolyMart</title>
@@ -15,7 +14,7 @@
     <link rel="stylesheet" href="main.css" />
     
 </head>
-<body><div style="background:#fff1c4;color:#501515;text-align:center;padding:8px;font:14px sans-serif">Portfolio demo — use fictional details only. No real payments or deliveries.</div>
+<body><div class="demo-banner" style="background:#fff1c4;color:#501515;text-align:center;padding:8px;font:14px sans-serif">Portfolio demo — browse without signing in. No real payments or deliveries.</div>
 <header>
     <div class="container">
     <div class="logo" aria-label="PolyMart logo">
@@ -31,7 +30,7 @@
         <a href="#Home">Home</a>
         <button onclick="filterProducts('all')">Products</button>
         <a href="#About">About</a>
-        <a href="#" class="my-account-link">My Account</a>
+        <a href="purchase.php">My Purchases</a>
         <div id="loader" class="loader-overlay">
   <div class="loader-spinner"></div>
 </div>
@@ -43,10 +42,8 @@
             <button type="submit" class="search-button" aria-label="Search"><i class="fas fa-search"></i></button>
         </form>
         <button onclick="window.location.href='cart.php'" class="cart-button" aria-label="Cart"><i class="fas fa-shopping-cart"></i></button>
-       <button onclick="logout()" class="cart-button" aria-label="Logout"><i class="fas fa-sign-out-alt"></i></button>
-       <script>
-  function logout() { polyLogout(); }
-</script>
+       <button onclick="resetDemo()" class="cart-button" aria-label="Reset demo" title="Reset demo"><i class="fas fa-redo"></i></button>
+       
       </div>
     </div>
 </header>
@@ -54,7 +51,7 @@
   
 <section id = "Home" class="hero" aria-label="Welcome hero section">
     <div class="hero-container">
-      <video autoplay muted loop id="bg-video">
+      <video autoplay muted loop playsinline id="bg-video">
   <source src="elements/bg_moving5.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
@@ -62,7 +59,7 @@
         <p>Your campus marketplace for buying and selling everything you need. Easy, Fast and student-friendly!</p>
         <div class="hero-buttons">
             <button class="btn-yellow" type="button" onclick="filterProducts('all')">Start Shopping</button>
-            <button class="btn-outline-red" type="button">Sell Your Items</button>
+            <button class="btn-outline-red" type="button" onclick="location.href='purchase.php'">View Demo Orders</button>
         </div>
     </div>
     <div class="hero-image">
@@ -512,8 +509,8 @@
             </div>
         <div>
 
-            <h3 class="step-title">Create an Account</h3>
-            <p>Sign up with your student email to get started. Verification is quick and easy.</p>
+            <h3 class="step-title">Browse as a Guest</h3>
+            <p>Explore the demo without signing up or sharing personal information.</p>
         </div>
         
         </div>
@@ -522,8 +519,8 @@
                 <img src="./elements/POLYMART (9) 3.png" alt="CA" width="100" height="100" />
             </div>
         <div>
-            <h3 class="step-title">List or Browse Items</h3>
-            <p>Easily list items you want to sell or browse what others are offering on campus.</p>
+            <h3 class="step-title">Choose Your Items</h3>
+            <p>Browse sample campus products and add your favorites to the cart.</p>
         </div>
         
         </div>
@@ -532,8 +529,8 @@
                 <img src="./elements/POLYMART (9) 4.png" alt="CA" width="100" height="100" />
             </div>
         <div>
-            <h3 class="step-title">Meet & Exchange</h3>
-            <p>Arrange safe on-campus meetups to complete your transactions.</p>
+            <h3 class="step-title">Try Demo Checkout</h3>
+            <p>Try a simulated order. No payment or delivery will take place.</p>
         </div>
        
         </div>
@@ -543,15 +540,7 @@
 
 
 
-<section  id="stay-updated "class="stay-updated" aria-label="Stay updated newsletter">
-    <h2>Stay Updated</h2>
-    <p>Get notified about new listings, campus sales events, and more!</p>
-    <form class="subscribe-form" onsubmit="event.preventDefault()" aria-label="Subscribe to newsletter">
-        <input type="email" class="subscribe-input" placeholder="Your email address" aria-label="Email address" required />
-        <button type="submit" class="subscribe-button">Subscribe</button>
-    </form>
-    <p class="privacy-text">We respect your privacy and will never share your information.</p>
-</section>
+<section class="stay-updated"><h2>Explore PolyMart</h2><p>Try the demo without entering personal details.</p><button class="subscribe-button" onclick="filterProducts('all')">Browse Products</button></section>
 
 <footer aria-label="Site footer">
    
@@ -567,11 +556,11 @@
         </section>
         <section class="footer-section footer-links" aria-label="Quick links">
             <h4>Quick Links</h4>
-            <a href="#">Home</a>
-            <a href="#">Categories</a>
-            <a href="#">Sell Items</a>
-            <a href="#">My Account</a>
-            <a href="#">How It Works</a>
+            <a href="main_pm.php#Home">Home</a>
+            <a href="main_pm.php#Categories">Categories</a>
+            <span>Seller tools (not available in demo)</span>
+            <a href="purchase.php">My Purchases</a>
+            <a href="main_pm.php#About">How It Works</a>
         </section>
         <section class="footer-section footer-links" aria-label="Help and support">
             <h4>Help & Support</h4>
@@ -581,22 +570,12 @@
             <a href="#">Terms of Service</a>
             <a href="#">Privacy Policy</a>
         </section>
-        <section class="footer-section contact-info" aria-label="Contact information">
-            <h4>Contact Info</h4>
-            <p><i class="fas fa-map-marker-alt"></i> Student Union Building, Room 123 University Campus</p>
-            <p><i class="fas fa-envelope"></i> <a href="mailto:supportpolymart@gmail.com">supportpolymart@gmail.com</a></p>
-            <p><i class="fas fa-phone-alt"></i> (555) 123-456</p>
-            
-        </section>
+        <section class="footer-section"><h4>Portfolio Demo</h4><p>No real sales, payments or deliveries.</p></section>
     </div>
     <hr class="footer-divider" />
     <div class="footer-bottom container">
         <p>© 2025 PolyMart. All right reserved.</p>
-        <div class="footer-logos" aria-label="Payment methods">
-            <img src="https://storage.googleapis.com/a1aa/image/dd492ca8-0774-427c-c805-9d84170c4b07.jpg" alt="Visa logo in white on red background" width="70" height="70" loading="lazy" />
-            <img src="https://storage.googleapis.com/a1aa/image/d06e3803-520a-47e7-1f67-1246c57eeb47.jpg" alt="PayPal logo in white on red background" width="70" height="70" loading="lazy" />
-            <img src="https://storage.googleapis.com/a1aa/image/4d44df17-212d-4754-f350-245570609943.jpg" alt="Apple logo in white on red background" width="70" height="70" loading="lazy" />
-        </div>
+        <p>Simulated checkout only.</p>
     </div>
 </footer>
  
@@ -609,20 +588,19 @@
 
   // Add product to cart in sessionStorage
   function addToCart(product) {
-  const currentUser = sessionStorage.getItem('currentUser');
-  const cartKey = `cart_${currentUser}`;
-
-  let cart = JSON.parse(sessionStorage.getItem(cartKey)) || [];
+  product = cleanItem(product);
+  if (!product) return;
+  let cart = getCart();
 
   // Check if product already in cart
   let existing = cart.find(item => item.name === product.name);
   if (existing) {
-    existing.quantity += product.quantity; // increase qty
+    existing.quantity = Math.min(99, existing.quantity + product.quantity); // increase qty
   } else {
     cart.push(product);
   }
 
-  sessionStorage.setItem(cartKey, JSON.stringify(cart));
+  if (!saveList(CART_KEY,cart)) return;
   alert(`Added ${product.quantity} x ${product.name} to cart!`);
 }
 
@@ -652,25 +630,10 @@
     const quantity = parseInt(document.getElementById('quantity').value);
 
     addToCart({name, price, quantity, image});
+    document.getElementById("productModal").style.display="none";
   });
 </script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const currentUser = sessionStorage.getItem("currentUser");
-  const currentUserData = JSON.parse(sessionStorage.getItem("currentUserData"));
 
-  if (!currentUser || !currentUserData) {
-    window.location.href = "login_page.php";
-    return;
-  }
-
-  const displayName = currentUserData.username || `${currentUserData.firstName} ${currentUserData.lastName}` || currentUser;
-  const welcomeEl = document.getElementById("welcomeUser");
-  if (welcomeEl) {
-    welcomeEl.textContent = `Welcome to PolyMart, ${displayName}!`;
-  }
-});
-</script>
 
 
 </body>

@@ -1,12 +1,11 @@
-<?php require 'bootstrap.php'; if(empty($_SESSION['email'])){header('Location: login_page.php');exit;} require 'connect.php'; ?>
+<?php require __DIR__.'/bootstrap.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="csrf-token" content="<?= htmlspecialchars($_SESSION['csrf'], ENT_QUOTES) ?>">
-<script src="auth.js"></script><script>sessionStorage.setItem('currentUser',<?= json_encode($_SESSION['email'],JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>);sessionStorage.setItem('currentUserData',JSON.stringify(<?= json_encode(profile($_SESSION['email']),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>));</script>
+<script src="guest.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Account - PolyMart</title>
+  <title>Demo Purchases - PolyMart</title>
   <link rel="stylesheet" href="purchase.css" />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow&display=swap" rel="stylesheet" />
@@ -14,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
-<body><div style="background:#fff1c4;color:#501515;text-align:center;padding:8px;font:14px sans-serif">Portfolio demo — use fictional details only. No real payments or deliveries.</div>
+<body><div class="demo-banner" style="background:#fff1c4;color:#501515;text-align:center;padding:8px;font:14px sans-serif">Portfolio demo — browse without signing in. No real payments or deliveries.</div>
   <header>
     <div class="container">
     <div class="logo" aria-label="PolyMart logo">
@@ -28,9 +27,9 @@
     </div>
     <nav aria-label="Primary navigation">
         <a href="main_pm.php#Home">Home</a>
-        <button href="main_pm.php#Products">Products</button>
+        <a href="main_pm.php#Products">Products</a>
         <a href="main_pm.php#About">About</a>
-        <a href="account.php">My Account</a>
+        <a href="purchase.php">My Purchases</a>
     </nav>
     <div class="header-right">
         <form class="search-form" role="search" aria-label="Search products">
@@ -38,17 +37,15 @@
             <button type="submit" class="search-button" aria-label="Search"><i class="fas fa-search"></i></button>
         </form>
         <button onclick="window.location.href='cart.php'"  class="cart-button" aria-label="Cart"><i class="fas fa-shopping-cart"></i></button>
-         <button onclick="logout()" class="cart-button" aria-label="Logout"><i class="fas fa-sign-out-alt"></i></button>
-         <script>
-  function logout() { polyLogout(); }
-</script>
+         <button onclick="resetDemo()" class="cart-button" aria-label="Reset demo" title="Reset demo"><i class="fas fa-redo"></i></button>
+         
     </div>
     </div>
     
 </header>
 <section id="Home" class="hero" aria-label="Welcome hero section">
   <div class="hero-container">
-    <video autoplay muted loop id="bg-video">
+    <video autoplay muted loop playsinline id="bg-video">
       <source src="elements/bg_moving5.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
@@ -59,40 +56,9 @@
         <div class="account-choice">
           <div class="icon">
             <img src="elements/ic_sharp-account-circle.png" alt="icon">
-            <span>User</span>
+            <span>Demo Guest</span>
           </div>
-          <div class="account-menu">
-            <div class="menu-item" onclick="toggleAccountMenu()">
-              <img src="elements/mdi_account-outline.png" alt="icon">
-              <a href="#">My Account</a>
-            </div>
-
-            <!-- These will be toggled -->
-            <div class="menu-item account-subitem" style="display: none;">
-              <a href="account.php"><h2>Profile</h2></a>
-            </div>
-            <div class="menu-item account-subitem" style="display: none;">
-              <a href="address.php"><h2>Addresses</h2></a>
-            </div>
-            <div class="menu-item account-subitem" style="display: none;">
-              <a href="password.php"><h2>Change Password</h2></a>
-            </div>
-
-            <div class="menu-item">
-              <img src="elements/lets-icons_order.png" alt="icon">
-              <a href="purchase.php">My Purchases</a>
-            </div>
-          </div>
-        </div>
-
-        <script>
-          function toggleAccountMenu() {
-            const subItems = document.querySelectorAll('.account-subitem');
-            subItems.forEach(item => {
-              item.style.display = item.style.display === 'none' ? 'flex' : 'none';
-            });
-          }
-        </script>
+          <div class="account-menu"><div class="menu-item"><a href="main_pm.php#Products">Browse Products</a></div><div class="menu-item"><a href="cart.php">Shopping Cart</a></div><div class="menu-item"><a href="purchase.php">My Purchases</a></div></div></div>
 
         <!-- Right Form Section -->
         <div class="form-section">
@@ -105,7 +71,6 @@
 
       </div>
     </div>
-  </div>
 </section>
 
 
@@ -124,11 +89,11 @@
         </section>
         <section class="footer-section footer-links" aria-label="Quick links">
             <h4>Quick Links</h4>
-            <a href="#">Home</a>
-            <a href="#">Categories</a>
-            <a href="#">Sell Items</a>
-            <a href="#">My Account</a>
-            <a href="#">How It Works</a>
+            <a href="main_pm.php#Home">Home</a>
+            <a href="main_pm.php#Categories">Categories</a>
+            <span>Seller tools (not available in demo)</span>
+            <a href="purchase.php">My Purchases</a>
+            <a href="main_pm.php#About">How It Works</a>
         </section>
         <section class="footer-section footer-links" aria-label="Help and support">
             <h4>Help & Support</h4>
@@ -138,86 +103,29 @@
             <a href="#">Terms of Service</a>
             <a href="#">Privacy Policy</a>
         </section>
-        <section class="footer-section contact-info" aria-label="Contact information">
-            <h4>Contact Info</h4>
-            <p><i class="fas fa-map-marker-alt"></i> Student Union Building, Room 123 University Campus</p>
-            <p><i class="fas fa-envelope"></i> <a href="mailto:supportpolymart@gmail.com">supportpolymart@gmail.com</a></p>
-            <p><i class="fas fa-phone-alt"></i> (555) 123-456</p>
-            
-        </section>
+        <section class="footer-section"><h4>Portfolio Demo</h4><p>No real sales, payments or deliveries.</p></section>
     </div>
     <hr class="footer-divider" />
     <div class="footer-bottom container">
         <p>© 2025 PolyMart. All right reserved.</p>
-        <div class="footer-logos" aria-label="Payment methods">
-            <img src="https://storage.googleapis.com/a1aa/image/dd492ca8-0774-427c-c805-9d84170c4b07.jpg" alt="Visa logo in white on red background" width="70" height="70" loading="lazy" />
-            <img src="https://storage.googleapis.com/a1aa/image/d06e3803-520a-47e7-1f67-1246c57eeb47.jpg" alt="PayPal logo in white on red background" width="70" height="70" loading="lazy" />
-            <img src="https://storage.googleapis.com/a1aa/image/4d44df17-212d-4754-f350-245570609943.jpg" alt="Apple logo in white on red background" width="70" height="70" loading="lazy" />
-        </div>
+        <p>Simulated checkout only.</p>
     </div>
 </footer>
         
 
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const currentUserEmail = sessionStorage.getItem("currentUser");
 
-  if (!currentUserEmail) {
-    alert("No user logged in.");
-    window.location.href = "login_page.php";
-    return;
-  }
-
-  try {
-    const res = await fetch('get_user.php');
-    const userData = await res.json();
-
-    if (userData.error) throw new Error(userData.error);
-
-    sessionStorage.setItem("currentUserData", JSON.stringify(userData));
-
-    // ✨ Update UI
-    const nameSpan = document.querySelector(".account-choice .icon span");
-    if (nameSpan) {
-      nameSpan.textContent = userData.username || `${userData.firstName} ${userData.lastName}`;
-    }
-
-    const sidebarIconImg = document.querySelector(".account-choice .icon img");
-    if (sidebarIconImg && userData.profileImage) {
-      sidebarIconImg.src = userData.profileImage;
-    }
-
-    // 👇 Optionally fill fields if needed (for account.php only)
-    if (document.getElementById("profileImageInput")) {
-      document.querySelector(".form-left input:nth-child(1)").value = userData.username || "";
-      document.querySelector(".form-left input:nth-child(2)").value = `${userData.firstName || ""} ${userData.lastName || ""}`;
-      document.querySelector(".form-left input:nth-child(3)").value = userData.email || "";
-      document.querySelector(".form-left input:nth-child(4)").value = userData.phone || "";
-
-      if (userData.profileImage) {
-        document.querySelector(".avatar img").src = userData.profileImage;
-      }
-    }
-
-  } catch (err) {
-    console.error("❌ Failed to fetch user info:", err);
-    alert("Unable to load user profile. Please try again.");
-  }
-});
-</script>
 
 </body>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const currentUser = sessionStorage.getItem("currentUser");
-  const allOrders = JSON.parse(sessionStorage.getItem("polyOrders")) || [];
+  const allOrders = getOrders();
   const container = document.getElementById("purchase-container");
 
-  const userOrders = allOrders.filter(order => order.user === currentUser);
+  const userOrders = allOrders;
 
   if (!userOrders.length) {
-    container.innerHTML = "<p style='color: white;'>No purchases found.</p>";
+    container.innerHTML = "<p style='color: white;'>No demo purchases yet.</p>";
     return;
   }
 
@@ -254,14 +162,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const orderId = parseInt(e.target.dataset.id);
       if (confirm(`Are you sure you want to delete order #${orderId}?`)) {
         const updatedOrders = allOrders.filter(order => order.orderId !== orderId);
-        sessionStorage.setItem("polyOrders", JSON.stringify(updatedOrders));
+        if (!saveList(ORDER_KEY,updatedOrders)) return;
         location.reload(); // refresh to show updated list
       }
     }
   });
 });
-</script>
-
 </script>
 
 <style>
@@ -302,7 +208,5 @@ document.addEventListener("DOMContentLoaded", () => {
   border: 1px, solid, #b81200;
   color: #b81200;
 }
-</style>
-
 </style>
 </html>

@@ -1,3 +1,0 @@
-<?php
-require 'bootstrap.php'; auth(); require 'connect.php';
-$e=auth();$d=post();$img=field($d,'profileImage',1400000,false);if($img!==''){if(!preg_match('~^data:image/(png|jpeg|webp);base64,([A-Za-z0-9+/=]+)$~D',$img,$m))fail('Use PNG, JPEG or WebP.');$raw=base64_decode($m[2],true);$info=$raw===false?false:@getimagesizefromstring($raw);if(!$info||strlen($raw)>1000000||$info[0]>2048||$info[1]>2048||$info['mime']!=='image/'.$m[1])fail('Invalid or oversized image.');}query('UPDATE users SET username=?,phone=?,firstName=?,lastName=?,profileImage=? WHERE email=?','ssssss',field($d,'username',100,false),field($d,'phone',20,false),field($d,'firstName',50),field($d,'lastName',50),$img,$e);out(['success'=>true]);
