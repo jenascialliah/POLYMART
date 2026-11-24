@@ -1,0 +1,68 @@
+name: Deploy POLYMART to Azure
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: polymart-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Prepare deployment package
+        run: |
+          git archive --format=zip \
+            --output="$RUNNER_TEMP/polymart.zip" \
+            HEAD -- \
+            elements \
+            'favicon_io (1)' \
+            24.png 25.png 29.png \
+            favicon.ico \
+            bootstrap.php \
+            index.php \
+            pm_landing_pg.php \
+            main_pm.php \
+            cart.php \
+            checkout.php \
+            purchase.php \
+            guest.js \
+            main.js \
+            pm.js \
+            style.css \
+            main.css \
+            cart.css \
+            checkout.css \
+            purchase.css
+
+      - name: Login to Azure using OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy POLYMART to Azure
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: polymart-jenascialliah
+          package: ${{ runner.temp }}/polymart.zip
+
+      - name: Logout from Azure
+        if: always()
+        run: az logout
