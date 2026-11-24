@@ -1,0 +1,678 @@
+<?php require 'bootstrap.php'; if(empty($_SESSION['email'])){header('Location: login_page.php');exit;} require 'connect.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="csrf-token" content="<?= htmlspecialchars($_SESSION['csrf'], ENT_QUOTES) ?>">
+<script src="auth.js"></script><script>sessionStorage.setItem('currentUser',<?= json_encode($_SESSION['email'],JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>);sessionStorage.setItem('currentUserData',JSON.stringify(<?= json_encode(profile($_SESSION['email']),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>));</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PolyMart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="main.css" />
+    
+</head>
+<body><div style="background:#fff1c4;color:#501515;text-align:center;padding:8px;font:14px sans-serif">Portfolio demo — use fictional details only. No real payments or deliveries.</div>
+<header>
+    <div class="container">
+    <div class="logo" aria-label="PolyMart logo">
+        <img src="./elements/pm_logo.png" alt="PolyMart logo"
+          width="32"
+          height="32"
+          style="display:block; border-radius: 15%;"
+           />
+        <span class="logo-text">PolyMart</span>
+        
+    </div>
+    <nav aria-label="Primary navigation">
+        <a href="#Home">Home</a>
+        <button onclick="filterProducts('all')">Products</button>
+        <a href="#About">About</a>
+        <a href="#" class="my-account-link">My Account</a>
+        <div id="loader" class="loader-overlay">
+  <div class="loader-spinner"></div>
+</div>
+       
+    </nav>
+    <div class="header-right">
+        <form class="search-form" role="search" aria-label="Search products">
+            <input type="text" class="search-input" placeholder="Search products..." aria-label="Search products" />
+            <button type="submit" class="search-button" aria-label="Search"><i class="fas fa-search"></i></button>
+        </form>
+        <button onclick="window.location.href='cart.php'" class="cart-button" aria-label="Cart"><i class="fas fa-shopping-cart"></i></button>
+       <button onclick="logout()" class="cart-button" aria-label="Logout"><i class="fas fa-sign-out-alt"></i></button>
+       <script>
+  function logout() { polyLogout(); }
+</script>
+      </div>
+    </div>
+</header>
+<main>
+  
+<section id = "Home" class="hero" aria-label="Welcome hero section">
+    <div class="hero-container">
+      <video autoplay muted loop id="bg-video">
+  <source src="elements/bg_moving5.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+        <h1 id="welcomeUser">Welcome to <strong>PolyMart!</strong></h1>
+        <p>Your campus marketplace for buying and selling everything you need. Easy, Fast and student-friendly!</p>
+        <div class="hero-buttons">
+            <button class="btn-yellow" type="button" onclick="filterProducts('all')">Start Shopping</button>
+            <button class="btn-outline-red" type="button">Sell Your Items</button>
+        </div>
+    </div>
+    <div class="hero-image">
+            <img src="./elements/pm_market2.png" alt="Marketplace illustration" />
+        </div>
+</section>
+
+</main>
+<section id="Categories" class="browse-categories" aria-label="Browse categories">
+    <h2>Browse Categories</h2>
+    <p1>Find exactly what you’re looking for</p1>
+        <div class="categories-grid">
+  <a class="category-link" onclick="filterProducts('exam')">
+    <div class="category-card">
+      <div class="category-icon">
+        <img src="elements/exam_logo (1).png" alt="EXAM" />
+      </div>
+      <h3 class="category-title">Exam Essentials</h3>
+      <p class="category-desc">Get study guides and past papers</p>
+    </div>
+  </a>
+
+  <a class="category-link" onclick="filterProducts('lifestyle')">
+    <div class="category-card">
+      <div class="category-icon">
+        <img src="elements/lifestyle_logo.png" alt="LIFESTYLE" />
+      </div>
+      <h3 class="category-title">Lifestyle Essentials</h3>
+      <p class="category-desc">Stay refreshed with daily must-haves</p>
+    </div>
+  </a>
+
+  <a class="category-link" onclick="filterProducts('merch')">
+    <div class="category-card">
+      <div class="category-icon">
+        <img src="elements/polymerch.png" alt="POLYMERCH" />
+      </div>
+      <h3 class="category-title">PolyMart Merch</h3>
+      <p class="category-desc">Show your pride with PolyMart gear</p>
+    </div>
+  </a>
+</div>
+
+    
+</section>
+
+<section id="Products" class="featured-products" aria-label="Featured products">
+  <div class="container">
+    <div class="featured-header">
+      <h2>Featured Products</h2>
+      <div class="button-group">
+      <button id="view-all-btn" class="view-all-products-btn" onclick="filterProducts('all')">View All Products</button>
+      <div class="sort-container" role="group" aria-label="Filter and sort products">
+        <button id="hide-all-btn" class="hide-all-products-btn">Sort</button>
+        <div id="category-dropdown" class="dropdown-menu">
+        <button onclick="filterProducts('popular')">Popular</button>
+        <button onclick="filterProducts('exam')">Exam</button>
+        <button onclick="filterProducts('lifestyle')">Lifestyle</button>
+        <button onclick="filterProducts('merch')">PolyMerch</button>
+      </div>
+      </div>
+      </div>
+    </div>
+
+  <!-- All Products Grid -->
+<div id="all-products" class="products-grid active">
+  <article class="product-card">
+    <img src="./elements/Mini-Fan.png" alt="PolyMini-Fan" class="product-image" />
+    <div class="product-info">
+      <div class="product-header">
+        <h3>Poly Fan</h3>
+        <span class="product-price">Php 999.00</span>
+      </div>
+      <p class="product-desc"> Cool Air, Anywhere!</p>
+<div class="action-buttons">
+  <button class="view-item-btn"
+          data-name="Poly Fan"
+          data-price="Php 999.00"
+          data-description="Beat the heat while shining with Tanglaw spirit
+             using this official Poly Mini-Fan — a perfect blend of comfort, 
+             pride, and Mustang energy wherever you go."
+          data-image="elements/Mini-Fan.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+    </div>
+  </article>
+
+  <article class="product-card">
+    <img src="./elements/Ballpen.png" alt="Poly Ballpen" class="product-image" />
+    <div class="product-info">
+      <div class="product-header">
+        <h3>Poly Pen</h3>
+        <span class="product-price">Php 30.00</span>
+      </div>
+      <p class="product-desc"> Smooth Writing, Every Time!</p>
+      <div class="action-buttons">
+  <button class="view-item-btn"
+          data-name="Poly Pen"
+          data-price="Php 30.00"
+          data-description="Express yourself with the official Poly Pen
+          — smooth, reliable, and designed to inspire every Pupian’s 
+          creativity and success."
+          data-image="elements/Ballpen.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+    </div>
+  </article>
+
+  <article class="product-card">
+    <img src="./elements/Keychains.png" alt="Poly Keychain" class="product-image" />
+    <div class="product-info">
+      <div class="product-header">
+        <h3>Poly Keychains</h3>
+        <span class="product-price">Php 100.00</span>
+      </div>
+      <p class="product-desc"> Small, Handy, and Fun!</p>
+      <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Poly Keychains"
+          data-price="Php 100.00"
+          data-description="Carry a piece of campus pride wherever you go
+           with this official Poly Keychain, designed for everyday use
+            with a sleek look."
+          data-image="elements/Keychains.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+    </div>
+  </article>
+
+  <article class="product-card">
+    <img src="./elements/Calculator.png" alt="Poly Calculator" class="product-image" />
+    <div class="product-info">
+      <div class="product-header">
+        <h3>Poly Calculator</h3>
+        <span class="product-price">Php 150.00</span>
+      </div>
+      <p class="product-desc"> Your Pocket Math Buddy!</p>
+      <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Poly Calculator"
+          data-price="Php 150.00"
+          data-description="Solve every problem with confidence using the official 
+          Poly Basic Calculator — reliable, easy to use,
+           and designed for every proud Pupian."
+          data-image="elements/Calculator.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+    </div>
+  </article>
+</div>
+
+
+    <!-- Exam Essentials -->
+     <div id="exam-section" class="category-section">
+     
+    <div id="exam-products" class="products-grid">
+      <h2 class="category-title">Exam Essentials</h2>
+      <article class="product-card">
+        <img src="./elements/Calculator.png" alt="Poly-Calculator" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Poly Calculator</h3>
+            <span class="product-price">Php 150.00</span>
+          </div>
+          <p class="product-desc"> Your Pocket Math Buddy!</p>
+        <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Poly Calculator"
+          data-price="Php 150.00"
+          data-description="Solve every problem with confidence using the official 
+          Poly Basic Calculator — reliable, easy to use,
+           and designed for every proud Pupian."
+          data-image="elements/Calculator.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+      <article class="product-card">
+        <img src="./elements/Ballpen.png" alt="Poly-Ballpen" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Poly Pen</h3>
+            <span class="product-price">Php 30.00</span>
+          </div>
+          <p class="product-desc"> Smooth Writing, Every Time!</p>
+          <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Poly Pen"
+          data-price="Php 30.00"
+          data-description="Express yourself with the official Poly Pen
+           — smooth, reliable, and designed to inspire every Pupian’s 
+           creativity and success."
+          data-image="elements/Ballpen.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+      <article class="product-card">
+        <img src="./elements/Pencil.png" alt="Poly-Pencil" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Poly Pencil</h3>
+            <span class="product-price">Php 20.00</span>
+          </div>
+          <p class="product-desc">Sketch, Write, Create — Go Poly.</p>
+          <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Poly Pencil"
+          data-price="Php 20.00"
+          data-description="Write your story with the official Poly Pencil
+           — smooth, dependable, and made for every proud 
+           Pupian to bring ideas to life."
+          data-image="elements/Pencil.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+      <article class="product-card">
+        <img src="./elements/Eraser.png" alt="Poly-Eraser" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Polyraser</h3>
+            <span class="product-price">Php 10.00</span>
+          </div>
+          <p class="product-desc">Mistakes Happen. Poly Fixes.</p>
+          <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Polyraser"
+          data-price="Php 10.00"
+          data-description="Make clean mistakes with the official Poly Eraser
+           — smooth, durable, and crafted for every Pupian’s 
+           learning journey."
+          data-image="elements/Eraser.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+    </div>
+    </div>
+
+    <!-- Lifestyle Essentials -->
+     <div id="lifestyle-section" class="category-section">
+      
+    <div id="lifestyle-products" class="products-grid">
+     <h2 class="category-title">Lifestyle Essentials</h2>
+      <article class="product-card">
+        <img src="./elements/Mini-Fan.png" alt="Poly-MiniFan" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Poly Fan</h3>
+            <span class="product-price">Php 999.00</span>
+          </div>
+          <p class="product-desc"> Cool Air, Anywhere!</p>
+          <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Poly Fan"
+          data-price="Php 999.00"
+          data-description="Beat the heat while shining with Tanglaw spirit using this official 
+          Poly Mini-Fan — a perfect blend of comfort, pride, 
+          and Mustang energy wherever you go."
+          data-image="elements/Mini-Fan.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+      <article class="product-card">
+        <img src="./elements/Wet Wipes.png" alt="Poly-Wet Wipes" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Wet Wipes</h3>
+            <span class="product-price">Php 40.00</span>
+          </div>
+          <p class="product-desc">Clean Hands, Cool You — Poly Fresh.</p>
+          <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Wet Wipes"
+          data-price="Php 40.00"
+          data-description="Stay fresh on the go with these official Poly Wet Wipes 
+          — gentle, effective, and made with pride for every Pupian’s 
+          daily care and comfort."
+          data-image="elements/Wet Wipes.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+      <article class="product-card">
+        <img src="./elements/Handkerchief.png" alt="Poly-Handkerchief" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Handkerchief</h3>
+            <span class="product-price">Php 70.00</span>
+          </div>
+          <p class="product-desc">Soft Touch, Strong Style — That’s Poly.</p>
+          <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Handkerchief"
+          data-price="Php 70.00"
+          data-description="Stay fresh and show your campus pride with this official Poly Handkerchief 
+          — soft, durable, and perfect for everyday use with a touch of Mustang spirit."
+          data-image="elements/Handkerchief.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+      <article class="product-card">
+        <img src="./elements/Dental Floss.png" alt="Poly-Dental Floss" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Dental Floss</h3>
+            <span class="product-price">Php 50.00</span>
+          </div>
+          <p class="product-desc">Smile Bright, Floss Right with Poly.</p>
+          <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Dental Floss"
+          data-price="Php 50.00"
+          data-description="Keep your smile bright and your Iskolar ng Bayan pride shining with this official 
+          Poly Dental Floss — a daily essential with a touch of campus spirit."
+          data-image="elements/Dental Floss.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+    </div>
+    </div>
+
+    <!-- PolyMart Merch -->
+     <div id="merch-section" class="category-section">
+    <div id="merch-products" class="products-grid">
+      <h2 class="category-title">PolyMart Merch</h2>
+      <article class="product-card">
+        <img src="./elements/T-Shirt.png" alt="Poly-Tshirt" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Poly T-Shirt</h3>
+            <span class="product-price">Php 250.00</span>
+          </div>
+          <p class="product-desc">Wear the Vibe. Wear Poly.</p>
+            <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Poly T-Shirt"
+          data-price="Php 250.00"
+          data-description="Show your campus pride in style with this official maroon merchandise, 
+          crafted for all-day comfort and a classic fit."
+          data-image="elements/T-Shirt.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <img src="./elements/Keychains.png" alt="Poly-Keychains" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Poly Keychains</h3>
+            <span class="product-price">Php 100.00</span>
+          </div>
+          <p class="product-desc"> Small, Handy, and Fun!</p>
+          <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Poly Keychains"
+          data-price="Php 100.00"
+          data-description="Carry a piece of campus pride wherever you go with this official Poly Keychain, 
+          designed for everyday use with a sleek look."
+          data-image="elements/Keychains.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+      <article class="product-card">
+        <img src="./elements/Pins.png" alt="Poly-Pins" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Poly Pins</h3>
+            <span class="product-price">Php 80.00</span>
+          </div>
+          <p class="product-desc">Pin Your Mood. Pin with Poly.</p>
+           <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Poly Pins"
+          data-price="Php 20.00"
+          data-description="Show off your Mustang spirit with Poly Pins — the perfect accessory 
+          to add personality and pride to your gear, featuring bold designs and durable quality."
+          data-image="elements/Pins.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+      <article class="product-card">
+        <img src="./elements/Sticker.png" alt="Poly-Stickers" class="product-image" />
+        <div class="product-info">
+          <div class="product-header">
+            <h3>Poly Stickers</h3>
+            <span class="product-price">Php 20.00</span>
+          </div>
+          <p class="product-desc">Stick It. Love It. Poly It.</p>
+          <div class="action-buttons">
+      <button class="view-item-btn"
+          data-name="Poly Stickers"
+          data-price="Php 20.00"
+          data-description="Show your campus pride with Poly Stickers — official merchandise
+           featuring vibrant designs, perfect for personalizing your laptop, water bottle, or notebook."
+          data-image="elements/Sticker.png">View Item</button>
+  <button class="add-to-cart-btn">Add to Cart</button>
+</div>
+        </div>
+      </article>
+    </div>
+    </div>
+<div id= "blank"class="blank">
+   <h1> blank </h1>
+</div>
+  </div>
+<div class="modal" id="productModal">
+  <div class="modal-content">
+    <div class="modal-image">
+      <img src="" alt="Product Image" id="modalImage" />
+    </div>
+    <div class="modal-details">
+      <h2 id="modalName"></h2>
+      <div class="price" id="modalPrice"></div>
+     <div class="quantity-wrapper">
+  <h3>Quantity</h3>
+  <div class="quantity-controls">
+    <button class="quantity-btn" data-change="-1">–</button>
+    <input type="text" id="quantity" value="1" readonly>
+    <button class="quantity-btn" data-change="1">+</button>
+  </div>
+</div>
+      <p id="modalDescription"></p>
+      <div class="modal-actions">
+        <button class="back-btn" id="closeModalBtn">Back</button>
+        <button class="buy-btn" id="buyNowBtn">Buy Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section id="About" class="how-it-works" aria-label="How PolyMart works">
+    <h2>How PolyMart Works</h2>
+    <p>Simple steps to buy and sell on campus</p>
+    <div class="steps">
+        <div class = "category-steps ">
+            <div class="step-image">
+                <img src="./elements/POLYMART (9) 1.png" alt="CA" width="110" height="110" />
+            </div>
+        <div>
+
+            <h3 class="step-title">Create an Account</h3>
+            <p>Sign up with your student email to get started. Verification is quick and easy.</p>
+        </div>
+        
+        </div>
+        <div class = "category-steps ">
+            <div class="step-image">
+                <img src="./elements/POLYMART (9) 3.png" alt="CA" width="100" height="100" />
+            </div>
+        <div>
+            <h3 class="step-title">List or Browse Items</h3>
+            <p>Easily list items you want to sell or browse what others are offering on campus.</p>
+        </div>
+        
+        </div>
+        <div class = "category-steps ">
+             <div class="step-image">
+                <img src="./elements/POLYMART (9) 4.png" alt="CA" width="100" height="100" />
+            </div>
+        <div>
+            <h3 class="step-title">Meet & Exchange</h3>
+            <p>Arrange safe on-campus meetups to complete your transactions.</p>
+        </div>
+       
+        </div>
+       
+    </div>
+</section>
+
+
+
+<section  id="stay-updated "class="stay-updated" aria-label="Stay updated newsletter">
+    <h2>Stay Updated</h2>
+    <p>Get notified about new listings, campus sales events, and more!</p>
+    <form class="subscribe-form" onsubmit="event.preventDefault()" aria-label="Subscribe to newsletter">
+        <input type="email" class="subscribe-input" placeholder="Your email address" aria-label="Email address" required />
+        <button type="submit" class="subscribe-button">Subscribe</button>
+    </form>
+    <p class="privacy-text">We respect your privacy and will never share your information.</p>
+</section>
+
+<footer aria-label="Site footer">
+   
+    <div class="footer-grid">
+        <section class="footer-section" aria-label="About PolyMart">
+            <h4>PolyMart</h4>
+            <p>Your campus marketplace for buying and selling everything you need.</p>
+            <div class="social-icons" role="list">
+                <a href="#" aria-label="Instagram" role="listitem"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Twitter" role="listitem"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="Website" role="listitem"><i class="fas fa-globe"></i></a>
+            </div>
+        </section>
+        <section class="footer-section footer-links" aria-label="Quick links">
+            <h4>Quick Links</h4>
+            <a href="#">Home</a>
+            <a href="#">Categories</a>
+            <a href="#">Sell Items</a>
+            <a href="#">My Account</a>
+            <a href="#">How It Works</a>
+        </section>
+        <section class="footer-section footer-links" aria-label="Help and support">
+            <h4>Help & Support</h4>
+            <a href="#">FAQs</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Safety Tips</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Privacy Policy</a>
+        </section>
+        <section class="footer-section contact-info" aria-label="Contact information">
+            <h4>Contact Info</h4>
+            <p><i class="fas fa-map-marker-alt"></i> Student Union Building, Room 123 University Campus</p>
+            <p><i class="fas fa-envelope"></i> <a href="mailto:supportpolymart@gmail.com">supportpolymart@gmail.com</a></p>
+            <p><i class="fas fa-phone-alt"></i> (555) 123-456</p>
+            
+        </section>
+    </div>
+    <hr class="footer-divider" />
+    <div class="footer-bottom container">
+        <p>© 2025 PolyMart. All right reserved.</p>
+        <div class="footer-logos" aria-label="Payment methods">
+            <img src="https://storage.googleapis.com/a1aa/image/dd492ca8-0774-427c-c805-9d84170c4b07.jpg" alt="Visa logo in white on red background" width="70" height="70" loading="lazy" />
+            <img src="https://storage.googleapis.com/a1aa/image/d06e3803-520a-47e7-1f67-1246c57eeb47.jpg" alt="PayPal logo in white on red background" width="70" height="70" loading="lazy" />
+            <img src="https://storage.googleapis.com/a1aa/image/4d44df17-212d-4754-f350-245570609943.jpg" alt="Apple logo in white on red background" width="70" height="70" loading="lazy" />
+        </div>
+    </div>
+</footer>
+ 
+ <script src="main.js"></script>
+ <script>
+  // Helper: parse price string like "Php 999.00" to number 999.00
+  function parsePrice(priceStr) {
+    return parseFloat(priceStr.replace(/[^0-9.-]+/g,""));
+  }
+
+  // Add product to cart in sessionStorage
+  function addToCart(product) {
+  const currentUser = sessionStorage.getItem('currentUser');
+  const cartKey = `cart_${currentUser}`;
+
+  let cart = JSON.parse(sessionStorage.getItem(cartKey)) || [];
+
+  // Check if product already in cart
+  let existing = cart.find(item => item.name === product.name);
+  if (existing) {
+    existing.quantity += product.quantity; // increase qty
+  } else {
+    cart.push(product);
+  }
+
+  sessionStorage.setItem(cartKey, JSON.stringify(cart));
+  alert(`Added ${product.quantity} x ${product.name} to cart!`);
+}
+
+  // Handle Add to Cart buttons
+  document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', e => {
+      // Find closest product card
+      let card = e.target.closest('.product-card');
+      let name = card.querySelector('.product-header h3').textContent.trim();
+      let priceStr = card.querySelector('.product-price').textContent.trim();
+      let price = parsePrice(priceStr);
+      let image = card.querySelector('.product-image').getAttribute('src');
+
+      // Default quantity = 1
+      addToCart({name, price, quantity: 1, image});
+    });
+  });
+
+  // Handle Buy Now button inside your modal
+  const buyNowBtn = document.getElementById('buyNowBtn');
+  buyNowBtn.addEventListener('click', () => {
+    // Read modal values
+    const name = document.getElementById('modalName').textContent.trim();
+    const priceStr = document.getElementById('modalPrice').textContent.trim();
+    const price = parsePrice(priceStr);
+    const image = document.getElementById('modalImage').getAttribute('src');
+    const quantity = parseInt(document.getElementById('quantity').value);
+
+    addToCart({name, price, quantity, image});
+  });
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const currentUser = sessionStorage.getItem("currentUser");
+  const currentUserData = JSON.parse(sessionStorage.getItem("currentUserData"));
+
+  if (!currentUser || !currentUserData) {
+    window.location.href = "login_page.php";
+    return;
+  }
+
+  const displayName = currentUserData.username || `${currentUserData.firstName} ${currentUserData.lastName}` || currentUser;
+  const welcomeEl = document.getElementById("welcomeUser");
+  if (welcomeEl) {
+    welcomeEl.textContent = `Welcome to PolyMart, ${displayName}!`;
+  }
+});
+</script>
+
+
+</body>
+</html>
+

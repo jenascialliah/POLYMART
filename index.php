@@ -1,0 +1,1 @@
+<?php header('Location: pm_landing_pg.php'); exit;

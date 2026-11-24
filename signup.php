@@ -1,0 +1,3 @@
+<?php
+require 'connect.php';
+$d=post();throttle('signup_attempts');$f=field($d,'firstName',50);$l=field($d,'lastName',50);$e=strtolower(field($d,'email',100));if(!filter_var($e,FILTER_VALIDATE_EMAIL))fail('Invalid email.');$h=password_hash(passwordInput($d,'password'),PASSWORD_DEFAULT);try{query("INSERT INTO users(firstName,lastName,email,password,username,phone,profileImage) VALUES(?,?,?,?, '', '', '')",'ssss',$f,$l,$e,$h);}catch(mysqli_sql_exception $x){if($x->getCode()===1062)fail('Unable to register with that email.',409);throw $x;}header('Content-Type: text/plain');echo 'Account created successfully!';

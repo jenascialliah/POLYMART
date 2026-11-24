@@ -1,0 +1,1 @@
+<?php require 'bootstrap.php'; post(); $_SESSION=[]; session_destroy(); setcookie(session_name(),'', ['expires'=>time()-3600,'path'=>'/','secure'=>$cloud,'httponly'=>true,'samesite'=>'Lax']);out(['success'=>true]);

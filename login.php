@@ -1,0 +1,3 @@
+<?php
+require 'connect.php';
+$d=post();throttle('login_attempts');$email=strtolower(field($d,'email',100));$pw=$d['password']??'';if(!is_string($pw)||strlen($pw)>72)fail('Invalid credentials.',401);$u=query('SELECT password FROM users WHERE email=?','s',$email)->get_result()->fetch_assoc();if(!password_verify($pw,$u['password']??'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.'))fail('Invalid credentials.',401);if(!$u)fail('Invalid credentials.',401);session_regenerate_id(true);$_SESSION['email']=$email;unset($_SESSION['login_attempts']);out(['success'=>true]+profile($email));

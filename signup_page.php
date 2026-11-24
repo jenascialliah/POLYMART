@@ -1,0 +1,132 @@
+<?php require 'bootstrap.php';  ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="csrf-token" content="<?= htmlspecialchars($_SESSION['csrf'], ENT_QUOTES) ?>">
+<script src="auth.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - PolyMart</title>
+  <link rel="stylesheet" href="signup_style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+</head>
+<body><div style="background:#fff1c4;color:#501515;text-align:center;padding:8px;font:14px sans-serif">Portfolio demo — use fictional details only. No real payments or deliveries.</div>
+  <header>
+  <nav>
+    <div class="logo-container">
+      <img
+        src="./elements/pm_logo.png"
+        alt="PolyMart logo"
+        width="32"
+        height="32"
+        style="display:block; border-radius: 15%;"
+      />
+      <span class="logo-text">PolyMart</span>
+    </div>
+  </nav>
+</header>
+
+  <main>
+     <video autoplay muted loop id="bg-video">
+  <source src="elements/bg_moving5.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+    <div class="signup-box">
+      <h2>Create Account</h2>
+      <p>Join PolyMart Community Today!</p>
+
+      <form id="signupForm">
+        <div class="name-fields">
+          <input type="text" id="firstName" placeholder="First Name" required />
+          <input type="text"id="lastName" placeholder="Last Name" required />
+        </div>
+
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="email" placeholder="john.doe@example.com" required />
+        </div>
+
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="Create a strong password" required />
+        </div>
+
+        <ul class="password-rules">
+          <li class="valid">At least 8 characters</li>
+          <li class="valid">Contains a number</li>
+          <li class="valid">Contains a special character</li>
+        </ul>
+
+        <label class="terms">
+          <input type="checkbox" id="terms" required />
+          I agree to the <span class="highlight">Term of Service</span> and <span class="highlight">Privacy Policy</span>
+        </label>
+
+        <button type="submit" class="create-btn">Create Account</button>
+        <p class="signin-link">Already have an account? <a href="login_page.php">Sign In</a></p>
+      </form>
+    </div>
+  </main>
+  <div id="loader" class="loader-overlay">
+  <div class="loader-spinner"></div>
+</div>
+  <script src="pm.js" defer></script>
+  
+  <script>
+document.getElementById("signupForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const firstName = document.getElementById("firstName").value.trim();
+  const lastName = document.getElementById("lastName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const termsAccepted = document.getElementById("terms").checked;
+
+  const hasNumber = /\d/;
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;
+
+  if (!firstName || !lastName || !email || !password) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  if (password.length < 12 || password.length > 72 || !hasNumber.test(password) || !hasSpecialChar.test(password)) {
+    alert("Password must be 12–72 characters and contain a number and special character.");
+    return;
+  }
+
+  if (!termsAccepted) {
+    alert("Please accept the Terms of Service and Privacy Policy.");
+    return;
+  }
+
+  fetch('signup.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      firstName,
+      lastName,
+      email,
+      password
+    })
+  })
+  .then(response => {
+    if (!response.ok) return response.text().then(text => { throw new Error(text) });
+    return response.text();
+  })
+  .then(data => {
+    alert(data);
+    window.location.href = "login_page.php";
+  })
+  .catch(error => {
+    alert("❌ " + error.message);
+  });
+});
+</script>
+
+
+</body>
+</html>

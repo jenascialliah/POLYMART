@@ -1,0 +1,245 @@
+/* Reset and base */
+* {
+  box-sizing: border-box;
+}
+
+#bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+body {
+  margin: 0;
+  font-family: 'Archivo', sans-serif;
+  background: linear-gradient(to top, #fcd34d33, #fce08a);
+  min-height: 100vh;
+  color: #374151;
+  position: relative;
+  z-index: 0;
+}
+a {
+  text-decoration: none;
+  color: #7f1d1d;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+header {
+  background: white;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+nav {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  user-select: none;
+}
+.logo-text {
+font-family: 'Archivo Black', sans-serif;
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: #7f1d1d;
+}
+.nav-links {
+ list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 2rem;
+}
+.nav-links a {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #7f1d1d;
+}
+.nav-links a:hover {
+  text-decoration: underline;
+}
+.search-cart {
+  padding-left: 10%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-form {
+  
+  position: relative;
+  display: none;
+}
+.search-input {
+  padding: 0.375rem 2rem 0.375rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  outline-offset: 2px;
+}
+.search-input:focus {
+  outline: none;
+  border-color: #7f1d1d;
+  box-shadow: 0 0 0 1px #7f1d1d;
+  color: #7f1d1d;
+}
+.search-button {
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #7f1d1d;
+  font-size: 0.75rem;
+}
+@media (min-width: 640px) {
+  .search-form {
+    display: block;
+  }
+}
+.cart-button {
+  background: transparent;
+  border: none;
+  color: #7f1d1d;
+  cursor: pointer;
+  font-size: 1.125rem;
+}
+.cart-button:hover {
+  color: #4b0f0f;
+}
+
+/* Main content */
+main {
+  max-width: 1120px;
+  margin: 3rem auto 0;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+@media (min-width: 768px) {
+  .nav-links {
+    display: flex;
+  }
+  main {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}
+.text-section {
+    padding-top: 10%;
+    max-width: 480px;
+    text-align: left;
+}
+
+.headline {
+  font-weight: 900;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  color: #1f2937;
+  margin: 0;
+}
+@media (min-width: 640px) {
+  .headline {
+    font-size: 3rem;
+  }
+}
+.highlight {
+  color: #7f1d1d;
+}
+.logo-text {
+  font-family: 'Archivo Black', sans-serif;
+  font-weight: 1000;
+  font-size: 1.5rem;
+  color: #7f1d1d;
+}
+.subtext {
+  margin-top: 1rem;
+  font-size: 1rem;
+  text-shadow: #1f2937;
+  color: #302e2e;
+  max-width: 320px;
+   font-family: 'Archivo Narrow', sans-serif;
+}
+
+.btn-get-started {
+  margin-top: 2rem;
+  background-color: #ffd700;
+  color: #78350f;
+  font-weight: 600;
+  font-family:'Archivo Narrow', sans-serif ;
+  font-size: 1rem;
+  padding: 0.5rem 2rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(83, 69, 34, 0.3);
+  transition: box-shadow 0.2s ease;
+}
+.btn-get-started:hover {
+  box-shadow: 0 6px 12px rgba(83, 69, 34, 0.3);
+}
+.image-section {
+  max-width: 600px;
+  width: 100%;
+  flex-shrink: 0;
+}
+.image-section img {
+  width: 135%;
+  height: auto;
+  display: block;
+}
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.547);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.loader-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.spinner {
+  border: 5px solid #f3cf08;
+  border-top: 5px solid #7f1d1d;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
